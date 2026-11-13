@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#030519">
+  <meta name="description" content="One floating 3D die in space. Tap anywhere or press Space to roll.">
+  <title>Orbit Dice</title>
+  <link rel="preload" href="./space-background-clean.png" as="image">
+  <link rel="stylesheet" href="./style.css?v=19">
+  <link rel="stylesheet" href="./achievements.css?v=3">
+</head>
+<body>
+  <div class="space" aria-hidden="true"></div>
+  <main class="scene" id="diceScene" tabindex="-1" aria-label="Orbit Dice" aria-describedby="rollInstructions">
+    <p class="sr-only" id="rollInstructions">Click or tap the scene, or press Space, to roll. The upward face is the result. The purple planet opens your roll statistics. The rocket opens achievements.</p>
+    <div class="star-shoot-field" aria-hidden="true">
+      <span class="shooting-star" data-star="1"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="2"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="3"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="4"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="5"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="6"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="7"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="8"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="9"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+      <span class="shooting-star" data-star="10"><i class="shooting-star-trail"></i><i class="shooting-star-head"></i></span>
+    </div>
+    <div class="rocket-flight">
+      <div class="rocket-art">
+        <span class="rocket-exhaust" aria-hidden="true"></span>
+        <img src="./rocket.png" class="rocket-image" width="462" height="409" alt="" draggable="false">
+        <button type="button" class="rocket-hit-target" id="rocketAchievements" aria-label="Open achievements" aria-haspopup="dialog" aria-controls="achievementsDialog" aria-expanded="false"></button>
+      </div>
+    </div>
+    <button class="planet-secret" id="planetSecret" type="button" aria-label="Open hidden dice stats" aria-expanded="false" aria-controls="rollStats"></button>
+    <div class="orbit-planet" data-source-x="486" data-source-y="276" data-source-size="120" aria-hidden="true">
+      <svg class="orbit-planet-image" viewBox="0 0 120 120" aria-hidden="true">
+        <defs><clipPath id="orangePlanetShape"><path d="M60 4 77 7 92 16 105 30 112 47 112 63 106 79 97 92 84 103 68 111 51 111 35 105 22 95 11 82 5 66 4 50 9 34 20 20 37 9Z"/></clipPath></defs>
+        <image href="./space-background-user.png" x="-486" y="-276" width="1710" height="920" clip-path="url(#orangePlanetShape)"/>
+      </svg>
+      <span class="orbit-planet-shade"></span>
+    </div>
+    <div class="orbit-planet" data-source-x="1096" data-source-y="499" data-source-size="112" aria-hidden="true">
+      <svg class="orbit-planet-image" viewBox="0 0 112 112" aria-hidden="true">
+        <defs><clipPath id="bluePlanetShape"><path d="M56 3 71 7 85 15 96 28 103 42 105 57 101 72 93 84 81 95 67 102 52 104 37 99 24 91 13 80 7 66 4 52 8 37 17 23 31 12 44 5Z"/></clipPath></defs>
+        <image href="./space-background-user.png" x="-1096" y="-499" width="1710" height="920" clip-path="url(#bluePlanetShape)"/>
+      </svg>
+      <span class="orbit-planet-shade"></span>
+    </div>
+    <section class="stats-panel" id="rollStats" role="dialog" aria-labelledby="statsTitle" hidden>
+      <button class="stats-close" id="statsClose" type="button" aria-label="Close stats">×</button>
+      <h2 id="statsTitle">Flight log</h2>
+      <dl class="stats-summary">
+        <div><dt>Total rolls</dt><dd id="statTotal">0</dd></div>
+      </dl>
+      <ol class="stats-distribution" id="statCounts" aria-label="Number of rolls for each face"></ol>
+    </section>
+    <div class="die-float">
+      <model-viewer id="diceModel" class="dice-model" src="./dice.glb" alt="A red six-sided die with white pips floating in space" tabindex="-1" loading="eager" reveal="auto" camera-target="0m 0m 0m" camera-orbit="25deg 36deg 0.052m" field-of-view="34deg" environment-image="neutral" shadow-intensity="1" shadow-softness="0.9" interpolation-decay="0" interaction-prompt="none"></model-viewer>
+    </div>
+    <p class="sr-only" id="rollAnnouncement" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div class="model-error" id="modelError" role="alert" hidden>
+      <p>The die couldn’t load.</p>
+      <button type="button" id="retryModel">Try again</button>
+    </div>
+  </main>
+  <dialog class="achievements-dialog" id="achievementsDialog" aria-labelledby="achievementsTitle">
+    <div class="achievements-shell">
+      <header class="achievements-header">
+        <h2 id="achievementsTitle">Achievements</h2>
+        <button type="button" class="achievements-close" id="achievementsClose" aria-label="Close achievements" autofocus>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+      <div class="achievements-overview">
+        <span id="achievementsSummary">0 / 10 unlocked</span>
+        <div class="achievements-overall-track" aria-hidden="true"><i id="achievementsOverallProgress"></i></div>
+      </div>
+      <ul class="achievement-grid" id="achievementsList"></ul>
+      <p class="achievements-footer" id="achievementsPersistence">Progress lasts for this tab.</p>
+    </div>
+  </dialog>
+  <script type="module" src="./model-viewer.min.js"></script>
+  <script type="module" src="./app.js?v=16"></script>
+</body>
+</html>

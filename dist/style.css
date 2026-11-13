@@ -1,0 +1,88 @@
+:root{color-scheme:dark;font-family:ui-rounded,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;background:#030519;color:#f5f0ff;--bg-x:50%;--bg-y:50%}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{font:inherit}[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.space{position:fixed;inset:0;pointer-events:none;background:#030519 url("./space-background-clean.png") var(--bg-x) var(--bg-y)/cover no-repeat}
+.scene{position:relative;isolation:isolate;display:grid;place-items:center;width:100%;height:100vh;height:100dvh;overflow:hidden;cursor:default;outline:none}
+
+/* Ten varied shooting stars cross behind the rocket and die. */
+.star-shoot-field{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none}
+.shooting-star{--shoot-length:180px;--shoot-thickness:2px;--shoot-color:#d9f5ff;--shoot-head:8px;position:absolute;left:0;top:var(--shoot-y,50%);display:block;width:var(--shoot-length);height:var(--shoot-thickness);opacity:0;pointer-events:none;will-change:transform,opacity}
+.shooting-star.is-active{animation:shoot-across var(--shoot-duration,2.4s) cubic-bezier(.22,.62,.34,1) both}
+.shooting-star-trail{position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,transparent 20%,var(--shoot-color) 88%,#fff 100%);border-radius:100%;filter:drop-shadow(0 0 4px var(--shoot-color))}
+.shooting-star-head{position:absolute;right:-2px;top:50%;width:var(--shoot-head);aspect-ratio:1;border-radius:50%;background:#fff;transform:translateY(-50%);box-shadow:0 0 5px 2px var(--shoot-color),0 0 15px 5px var(--shoot-color)}
+.shooting-star[data-star="1"]{--shoot-length:170px;--shoot-color:#c6f5ff;--shoot-head:7px}
+.shooting-star[data-star="2"]{--shoot-length:250px;--shoot-thickness:3px;--shoot-color:#ffe5a7;--shoot-head:10px}
+.shooting-star[data-star="3"]{--shoot-length:130px;--shoot-thickness:1.5px;--shoot-color:#dfc8ff;--shoot-head:6px}
+.shooting-star[data-star="4"]{--shoot-length:220px;--shoot-thickness:2.5px;--shoot-color:#a8dfff;--shoot-head:9px}
+.shooting-star[data-star="5"]{--shoot-length:155px;--shoot-color:#ffd1dd;--shoot-head:8px}
+.shooting-star[data-star="6"]{--shoot-length:280px;--shoot-thickness:3px;--shoot-color:#c7ffe8;--shoot-head:11px}
+.shooting-star[data-star="7"]{--shoot-length:195px;--shoot-thickness:1.5px;--shoot-color:#fff0c2;--shoot-head:6px}
+.shooting-star[data-star="8"]{--shoot-length:240px;--shoot-thickness:2.5px;--shoot-color:#b8caff;--shoot-head:9px}
+.shooting-star[data-star="9"]{--shoot-length:145px;--shoot-thickness:2px;--shoot-color:#ffd7a2;--shoot-head:7px}
+.shooting-star[data-star="10"]{--shoot-length:265px;--shoot-thickness:3px;--shoot-color:#a8f1ff;--shoot-head:10px}
+.shooting-star.to-left .shooting-star-trail{background:linear-gradient(270deg,transparent 0%,transparent 20%,var(--shoot-color) 88%,#fff 100%)}
+.shooting-star.to-left .shooting-star-head{right:auto;left:-2px}
+@keyframes shoot-across{0%{opacity:0;transform:translateX(0) rotate(var(--shoot-angle,0deg)) scale(.72)}12%{opacity:.95;transform:translateX(var(--shoot-distance-early)) rotate(var(--shoot-angle,0deg)) scale(1)}78%{opacity:.85}100%{opacity:0;transform:translateX(var(--shoot-distance)) rotate(var(--shoot-angle,0deg)) scale(.82)}}
+
+/* Fixed camera distance prevents the die changing size as its bounds rotate. */
+.die-float{position:relative;z-index:3;width:min(270px,44vw,42svh);aspect-ratio:1;animation:die-float 7s ease-in-out infinite}
+.dice-model{display:block;width:100%;height:100%;background:transparent;--poster-color:transparent;pointer-events:none;outline:none;filter:drop-shadow(0 20px 24px rgba(0,0,15,.48))}
+@keyframes die-float{0%,100%{transform:translate3d(-4px,5px,0)}50%{transform:translate3d(4px,-6px,0)}}
+
+/* The two planets are separate layers so the twin-six event can carry them around the die. */
+.orbit-planet{position:absolute;z-index:4;left:50%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%) scale(var(--orbit-scale,1));filter:drop-shadow(0 7px 9px #0009);pointer-events:none;will-change:left,top,transform;}
+.orbit-planet-image,.orbit-planet-shade{position:absolute;inset:0;width:100%;height:100%;}
+.orbit-planet-image{overflow:visible;image-rendering:pixelated;}
+.orbit-planet-shade{border-radius:50%;background:radial-gradient(ellipse at 32% 24%,#fff0 37%,#08102b17 60%,#0307178a 100%);opacity:var(--orbit-shadow,.74);mix-blend-mode:multiply;}
+.orbit-planet.is-spinning .orbit-planet-image{animation:planet-own-spin 7s linear both;}
+@keyframes planet-own-spin{to{transform:rotate(7turn)}}
+
+/* The image and exhaust share a rotation, keeping the flame attached to the nozzle. */
+.rocket-flight{--rocket-width:clamp(155px,17vw,235px);position:absolute;z-index:1;left:0;top:0;width:var(--rocket-width);aspect-ratio:462/409;pointer-events:none;animation:rocket-cruise var(--rocket-duration,90s) linear infinite;animation-delay:var(--rocket-delay,-23s);will-change:transform}
+.rocket-art {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --rocket-shadow: drop-shadow(0 10px 10px #0009);
+  --rocket-lit-shadow: var(--rocket-shadow) drop-shadow(0 0 4px #66dcff) drop-shadow(0 0 11px #a16aff);
+  transform: rotate(var(--rocket-angle, 15deg));
+}
+.rocket-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: var(--rocket-filter, var(--rocket-shadow));
+  transition: filter 220ms ease-out;
+}
+.rocket-hit-target{position:absolute;z-index:2;inset:0;display:block;width:100%;height:100%;padding:0;border:0;background:transparent;pointer-events:auto;cursor:inherit;clip-path:polygon(98% 1%,100% 4%,96% 15%,88% 28%,57% 57%,49% 71%,39% 94%,23% 100%,20% 89%,12% 88%,5% 80%,8% 73%,0 67%,14% 51%,33% 48%,57% 25%,80% 7%)}
+.rocket-art:has(.rocket-hit-target:focus-visible) {
+  --rocket-filter: var(--rocket-lit-shadow);
+}
+.rocket-hit-target:focus{outline:none}
+.rocket-exhaust{position:absolute;z-index:0;left:11.90%;top:79.95%;width:0;height:0;transform:rotate(-38.3deg);--flame-length:calc(var(--rocket-width)*.62);--flame-height:calc(var(--rocket-width)*.14)}
+.rocket-exhaust::before,.rocket-exhaust::after{content:"";position:absolute;right:-2px;top:calc(var(--flame-height)*-.5);width:var(--flame-length);height:var(--flame-height);transform-origin:right center;clip-path:polygon(0 50%,21% 32%,55% 9%,80% 0,100% 25%,100% 75%,80% 100%,55% 91%,21% 68%);background:linear-gradient(to left,#fff7d7 0%,#ffdb6f 28%,#ff862b 62%,#f04f1833 90%,transparent);animation:flame-flicker .16s ease-in-out infinite alternate;filter:drop-shadow(-8px 0 10px #ff9e3266)}
+.rocket-exhaust::after{width:calc(var(--flame-length)*.63);height:calc(var(--flame-height)*.45);top:calc(var(--flame-height)*-.225);background:linear-gradient(to left,#fffef4,#fff2a8 45%,#ffc15b00);animation-duration:.11s;animation-direction:alternate-reverse}
+@keyframes flame-flicker{from{transform:scaleX(.84) scaleY(.9);opacity:.82}to{transform:scaleX(1.08) scaleY(1.08);opacity:1}}
+@keyframes rocket-cruise{from{transform:translate3d(var(--rocket-start-x,-480px),var(--rocket-start-y,78vh),0)}to{transform:translate3d(var(--rocket-end-x,calc(100vw + 480px)),var(--rocket-end-y,12vh),0)}}
+
+/* The transparent planet button follows the image's actual cover crop. */
+.planet-secret{position:absolute;z-index:5;left:82.3%;top:9.6%;width:100px;height:100px;transform:translate(-50%,-50%);border:0;border-radius:50%;padding:0;background:transparent;cursor:inherit}
+.planet-secret:focus-visible{outline:2px solid #dfc9ff;outline-offset:4px;box-shadow:0 0 30px #bd91ff55}
+.stats-panel{position:absolute;z-index:8;top:max(20px,env(safe-area-inset-top));right:max(20px,env(safe-area-inset-right));width:min(300px,calc(100vw - 40px));max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;padding:25px 24px 22px;border:1px solid #d6c0ff4d;border-radius:20px;background:linear-gradient(145deg,#201646f5,#0a0d24f7);box-shadow:0 20px 70px #02031299,inset 0 1px #ffffff14;backdrop-filter:blur(18px);cursor:default}
+.stats-panel h2{margin:0 0 20px;font-size:21px;letter-spacing:-.5px;font-weight:650}
+.stats-summary{display:grid;gap:10px;margin:0}.stats-summary div{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px solid #dbcdff1c}.stats-summary dt{color:#c2bbd8;font-size:12px}.stats-summary dd{max-width:60%;margin:0;color:#f8d8f0;text-align:right;font-size:12px;font-weight:650;font-variant-numeric:tabular-nums}
+.stats-close{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:50%;background:#ffffff12;color:#e8e1f5;font-size:24px;line-height:1;cursor:pointer}.stats-close:hover{background:#ffffff26}.stats-close:focus-visible,.model-error button:focus-visible{outline:2px solid #dfc9ff;outline-offset:3px}
+.stats-distribution{display:grid;gap:9px;padding:0;margin:19px 0;list-style:none}.stats-distribution li{display:grid;grid-template-columns:12px 1fr 26px;align-items:center;gap:10px;color:#bfb5d7;font-size:11px;font-variant-numeric:tabular-nums}.stats-bar{height:5px;border-radius:5px;background:#ffffff0c;overflow:hidden}.stats-bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#9d7be5,#ed9cbe);transition:width .3s ease}.stats-distribution strong{text-align:right;font-size:11px;font-weight:500}
+.model-error{position:absolute;z-index:7;padding:20px;border:1px solid #d6c0ff4d;border-radius:16px;background:#100d28ee;text-align:center;cursor:default}.model-error p{margin:0 0 14px;font-size:14px}.model-error button{padding:9px 15px;border:1px solid #c4a9ff66;border-radius:9px;background:#a17bdf33;color:#eee7ff;cursor:pointer}
+html[data-paused] .die-float,html[data-paused] .rocket-flight,html[data-paused] .rocket-exhaust::before,html[data-paused] .rocket-exhaust::after{animation-play-state:paused}
+@media(max-width:600px){.die-float{width:min(230px,52vw,38svh)}.rocket-flight{--rocket-width:min(160px,39vw)}}
+@media(max-height:440px){.die-float{width:min(230px,53svh)}}
+@media(prefers-reduced-motion:reduce){.die-float,.rocket-flight,.rocket-exhaust::before,.rocket-exhaust::after{animation:none}.rocket-flight{left:9%;top:68%;transform:none}.stats-bar i{transition:none}}
+@media(prefers-reduced-motion:reduce){.orbit-planet.is-spinning .orbit-planet-image{animation:none}}
+@media(prefers-reduced-motion:reduce){.shooting-star.is-active{animation:none}}
+
+@media (prefers-reduced-motion: reduce) {
+  .rocket-image { transition: none; }
+}
