@@ -1,12 +1,6 @@
 # Orbit Dice
 
-A single-die space roller with a floating 3D die, the supplied pixel-art space background, and a moving rocket. Click or tap the scene, or press Space, to roll. The upward face is the result, and each roll is recorded in the hidden flight log.
-
-Click the purple planet to open the hidden flight log. It shows the total roll count and how many times each face has appeared. The log survives refreshes in the same browser tab. Escape closes it. Reduced-motion preferences are respected.
-
-Click or tap the moving rocket to open the achievements archive. All ten missions unlock silently. Open the archive to see progress and earned checkmarks. Close it with X, Escape, or a click outside. The modal blocks new rolls while open; a roll already spinning still completes normally.
-
-The flight log and achievements belong to the current tab. Switching windows or refreshing keeps progress. Opening the game again after closing it starts a new session.
+A simple dice game with some cool easter eggs. 
 
 ## Run locally
 
